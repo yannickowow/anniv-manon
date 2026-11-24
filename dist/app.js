@@ -2,19 +2,19 @@
 
 const albums = [
   {
-    name: 'Terres de brume', country: 'Islande', gift: 'A',
+    name: 'Terres de brume', country: 'Islande', letter: 'A',
     pages: [
       ['brume', 'Une pluie suspendue', 'Le grondement de l’eau arrive bien avant les premières gouttes sur les joues.', 'Une cascade immense dévale une falaise dans un nuage de gouttelettes.'],
       ['rivage', 'Au bord de l’encre', 'À chaque vague, l’écume dessine une nouvelle ligne sur le sable noir.', 'Vue aérienne des vagues qui bordent une plage de sable noir.'],
-      ['nuit', 'Quand le ciel danse', 'Encore un instant les yeux levés. Tu as une idée de l’endroit où l’on t’emmène ?', 'Des voiles de lumière verte ondulent dans le ciel nocturne.']
+      ['nuit', 'Quand le ciel danse', 'Encore un instant les yeux levés. Tu reconnais ce ciel ?', 'Des voiles de lumière verte ondulent dans le ciel nocturne.']
     ]
   },
   {
-    name: 'Reflets du Nord', country: 'Norvège', gift: 'B',
+    name: 'Reflets du Nord', country: 'Norvège', letter: 'B',
     pages: [
       ['horizon', 'Entre ciel et mer', 'D’ici, on peut suivre du regard le chemin de l’eau entre les sommets.', 'Des bras de mer bleus serpentent entre de hauts sommets rocheux.'],
       ['cabanes', 'La couleur du port', 'Un peu de rouge au bord de l’eau. On s’arrêterait bien ici pour la nuit.', 'Des maisons de pêcheurs rouges se serrent au pied des montagnes.'],
-      ['neige', 'Le silence blanc', 'La neige s’est posée sur les crêtes. As-tu deviné ce qui t’attend ?', 'Des cabanes au bord de la mer sous un sommet enneigé.']
+      ['neige', 'Le silence blanc', 'La neige s’est posée sur les crêtes. As-tu reconnu ces montagnes ?', 'Des cabanes au bord de la mer sous un sommet enneigé.']
     ]
   }
 ];
@@ -44,11 +44,11 @@ function renderPage() {
   const [file, title, note, alt] = selected.pages[end ? 0 : page];
   byId('photo').src = 'photos/' + file + '.jpg';
   byId('photo').alt = alt;
-  byId('page-label').textContent = end ? 'TON CADEAU D’ANNIVERSAIRE' : 'PHOTOGRAPHIE ' + (page + 1) + ' / ' + selected.pages.length;
+  byId('page-label').textContent = end ? 'POUR TES 30 ANS' : 'PHOTOGRAPHIE ' + (page + 1) + ' / ' + selected.pages.length;
   byId('caption').textContent = end ? 'Un voyage en ' + selected.country + ' !' : title;
   byId('note').textContent = end ? 'Joyeux anniversaire, Manon ! Ces paysages, tu vas les découvrir pour de vrai.' : note;
   byId('prev').disabled = page === 0;
-  byId('next').textContent = end ? 'Retour à la roulette' : page === selected.pages.length - 1 ? 'Découvrir mon cadeau' : 'Suivante';
+  byId('next').textContent = end ? 'Retour à la roulette' : page === selected.pages.length - 1 ? 'Tourner la dernière page' : 'Suivante';
   byId('progress').replaceChildren(...Array.from({ length: selected.pages.length + 1 }, (_, i) => {
     const dot = document.createElement('i');
     dot.classList.toggle('active', i === page);
@@ -60,7 +60,7 @@ function openAlbum(index, opener) {
   selected = albums[index];
   returnFocus = opener;
   page = 0;
-  byId('album-name').textContent = 'Cadeau ' + selected.gift + ' · ' + selected.name;
+  byId('album-name').textContent = 'Album ' + selected.letter + ' · ' + selected.name;
   renderPage();
   viewer.showModal();
   byId('next').focus();
@@ -88,7 +88,7 @@ function finishSpin() {
     spinPhase = 'idle';
     spinButton.disabled = false;
     cards.forEach(card => { card.disabled = false; });
-    spinMessage('Faire tourner la roue', 'La roue a choisi le cadeau ' + albums[chosenIndex].gift + '.');
+    spinMessage('Faire tourner la roue', 'La roue a choisi l’album ' + albums[chosenIndex].letter + '.');
     openAlbum(chosenIndex, spinButton);
   };
 }
