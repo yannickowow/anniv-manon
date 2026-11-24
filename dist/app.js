@@ -108,7 +108,7 @@ function pressSpin() {
     spinMessage('Arrêter la roue', 'Mode sans fin découvert ! À toi de la convaincre de s’arrêter.');
     return;
   }
-  chosenIndex = Math.random() < 0.5 ? 0 : 1;
+  chosenIndex = Math.random() < 0.9 ? 0 : 1;
   spinPhase = 'turning';
   cards.forEach(card => { card.disabled = true; });
   spinMessage('Encore un tour ?', 'La roue tourne. Laisse-la choisir…');
