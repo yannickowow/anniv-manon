@@ -42,7 +42,7 @@ function spinMessage(label, status) {
 function renderPage() {
   const end = page === selected.pages.length;
   const [file, title, note, alt] = selected.pages[end ? 0 : page];
-  byId('photo').src = file + '.jpg';
+  byId('photo').src = 'photos/' + file + '.jpg';
   byId('photo').alt = alt;
   byId('page-label').textContent = end ? 'POUR TES 30 ANS' : 'PHOTOGRAPHIE ' + (page + 1) + ' / ' + selected.pages.length;
   byId('caption').textContent = end ? 'Un voyage en ' + selected.country + ' !' : title;
