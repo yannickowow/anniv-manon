@@ -35,10 +35,10 @@
           <button id="spin-button" class="primary"><svg><use href="#spin"/></svg><span>Faire tourner la roue</span></button>
           <div class="hint" id="status" role="status"><svg><use href="#lock"/></svg><span>La réponse se trouve à la dernière page</span></div>
         </div>
-        <div class="instrument" aria-label="Roulette à deux moitiés, album A et album B">
+        <div class="instrument" role="img" aria-label="Roulette illustrée de montagnes et de vagues">
           <div class="orbit"></div><span class="cardinal north">N</span><span class="cardinal west">O</span><span class="cardinal east">E</span><span class="cardinal south">S</span>
           <div class="rim"><div class="ticks"></div>
-            <div class="wheel" id="wheel"><div class="half first"><span><svg><use href="#mountain"/></svg>Album A</span></div><div class="half second"><span><svg><use href="#waves"/></svg>Album B</span></div></div>
+            <div class="wheel" id="wheel"><div class="half first"><span><svg><use href="#mountain"/></svg></span></div><div class="half second"><span><svg><use href="#waves"/></svg></span></div></div>
             <div class="hub" aria-hidden="true"><svg viewBox="0 0 60 60"><path fill="#b4e6df" d="m30 3 5 21 14-13-12 15 20 4-21 5 13 14-15-12-4 20-5-21-14 13 12-15-20-4 21-5-13-14 15 12z"/><path fill="#538d90" d="M30 3v27l5-6zm27 27H30l6 5zM30 57V30l-5 6zM3 30h27l-6-5z"/><circle cx="30" cy="30" r="3" fill="#fff5db"/></svg></div>
           </div><div class="pointer"></div>
         </div>
@@ -47,8 +47,8 @@
     <section id="albums" class="albums wrap" aria-labelledby="albums-title">
       <div class="section-head"><h2 id="albums-title">Les albums secrets</h2><span><svg><use href="#camera"/></svg> 2 albums à découvrir</span></div>
       <div class="cards">
-        <button class="album-card card-a" data-album="0"><span class="card-content"><span class="tag">ALBUM A</span><strong>Terres de brume</strong><span class="count"><svg><use href="#camera"/></svg> 3 photographies</span></span><span class="open-icon" aria-hidden="true">＋</span></button>
-        <button class="album-card card-b" data-album="1"><span class="card-content"><span class="tag">ALBUM B</span><strong>Reflets du Nord</strong><span class="count"><svg><use href="#camera"/></svg> 3 photographies</span></span><span class="open-icon" aria-hidden="true">＋</span></button>
+        <button class="album-card card-a" data-album="0"><span class="card-content"><strong>Terres de brume</strong><span class="count"><svg><use href="#camera"/></svg> 3 photographies</span></span><span class="open-icon" aria-hidden="true">＋</span></button>
+        <button class="album-card card-b" data-album="1"><span class="card-content"><strong>Reflets du Nord</strong><span class="count"><svg><use href="#camera"/></svg> 3 photographies</span></span><span class="open-icon" aria-hidden="true">＋</span></button>
       </div>
     </section>
   </main>

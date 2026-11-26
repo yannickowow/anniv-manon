@@ -2,7 +2,7 @@
 
 const albums = [
   {
-    name: 'Terres de brume', country: 'Islande', letter: 'A',
+    name: 'Terres de brume', country: 'Islande',
     pages: [
       ['brume', 'Une pluie suspendue', 'Le grondement de l’eau arrive bien avant les premières gouttes sur les joues.', 'Une cascade immense dévale une falaise dans un nuage de gouttelettes.'],
       ['rivage', 'Au bord de l’encre', 'À chaque vague, l’écume dessine une nouvelle ligne sur le sable noir.', 'Vue aérienne des vagues qui bordent une plage de sable noir.'],
@@ -10,7 +10,7 @@ const albums = [
     ]
   },
   {
-    name: 'Reflets du Nord', country: 'Norvège', letter: 'B',
+    name: 'Reflets du Nord', country: 'Norvège',
     pages: [
       ['horizon', 'Entre ciel et mer', 'D’ici, on peut suivre du regard le chemin de l’eau entre les sommets.', 'Des bras de mer bleus serpentent entre de hauts sommets rocheux.'],
       ['cabanes', 'La couleur du port', 'Un peu de rouge au bord de l’eau. On s’arrêterait bien ici pour la nuit.', 'Des maisons de pêcheurs rouges se serrent au pied des montagnes.'],
@@ -36,10 +36,7 @@ let selected = albums[0];
 let page = 0;
 let returnFocus;
 let spinPhase = 'idle';
-let stopClicks = 0;
-let spinTimer;
 let motion;
-let chosenIndex;
 const wheel = byId('wheel');
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -77,7 +74,7 @@ function openAlbum(album, opener) {
   returnFocus = opener;
   page = 0;
   viewer.classList.toggle('anniversary', album === anniversaryAlbum);
-  byId('album-name').textContent = album.letter ? 'Album ' + album.letter + ' · ' + album.name : album.name;
+  byId('album-name').textContent = album.name;
   renderPage();
   viewer.showModal();
   byId('next').focus();
@@ -93,6 +90,7 @@ function finishSpin() {
   spinButton.disabled = true;
   spinMessage('La roue ralentit…', 'Encore un instant avant la première photo…');
   const start = wheelAngle();
+  const chosenIndex = Math.random() < 0.9 ? 0 : 1;
   const target = (chosenIndex === 0 ? 90 : 270) + (Math.random() - 0.5) * 40;
   const end = start + 720 + (target - start + 360) % 360;
   motion?.cancel();
@@ -105,7 +103,7 @@ function finishSpin() {
     spinPhase = 'idle';
     spinButton.disabled = false;
     cards.forEach(card => { card.disabled = false; });
-    spinMessage('Faire tourner la roue', 'La roue a choisi l’album ' + albums[chosenIndex].letter + '.');
+    spinMessage('Faire tourner la roue', 'La roue a choisi « ' + albums[chosenIndex].name + ' ».');
     byId('jahre').disabled = false;
     openAlbum(albums[chosenIndex], spinButton);
   };
@@ -113,24 +111,14 @@ function finishSpin() {
 
 function pressSpin() {
   if (spinPhase === 'stopping') return;
-  if (spinPhase === 'endless') {
-    stopClicks++;
-    if (stopClicks === 3) { finishSpin(); return; }
-    spinMessage(stopClicks === 1 ? 'Insister un peu' : 'Un dernier clic !', stopClicks === 1 ? 'Elle fait semblant de ne pas t’entendre…' : 'Promis, cette fois elle écoute.');
-    return;
-  }
   if (spinPhase === 'turning') {
-    clearTimeout(spinTimer);
-    spinPhase = 'endless';
-    stopClicks = 0;
-    spinMessage('Arrêter la roue', 'Mode sans fin découvert ! À toi de la convaincre de s’arrêter.');
+    finishSpin();
     return;
   }
-  chosenIndex = Math.random() < 0.9 ? 0 : 1;
   spinPhase = 'turning';
   byId('jahre').disabled = true;
   cards.forEach(card => { card.disabled = true; });
-  spinMessage('Encore un tour ?', 'La roue tourne. Laisse-la choisir…');
+  spinMessage('Arrêter la roue', 'La roue tourne…');
   const start = wheelAngle();
   if (!reducedMotion.matches) {
     motion = wheel.animate(
@@ -138,7 +126,6 @@ function pressSpin() {
       { duration: 730, iterations: Infinity }
     );
   }
-  spinTimer = setTimeout(finishSpin, reducedMotion.matches ? 1500 : 4800);
 }
 
 spinButton.addEventListener('click', pressSpin);
