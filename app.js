@@ -19,6 +19,15 @@ const albums = [
   }
 ];
 
+const anniversaryAlbum = {
+  name: 'BMW M5 · 30 Jahre',
+  pages: [
+    ['m5-27', 'La M5 en trois-quarts arrière', '© BMW Group', 'La berline gris mat vue de trois-quarts arrière, avec ses quatre sorties d’échappement.'],
+    ['m5-30', 'La signature sur le seuil', '© BMW Group', 'L’inscription « 30 Jahre M5 » sur le seuil de porte, aux couleurs de BMW M.'],
+    ['m5-31', 'À bord de la 30 Jahre', '© BMW Group', 'Les deux sièges avant noirs portent la broderie blanche « 30 Jahre M5 ».']
+  ]
+};
+
 const byId = id => document.getElementById(id);
 const viewer = byId('viewer');
 const spinButton = byId('spin-button');
@@ -39,28 +48,36 @@ function spinMessage(label, status) {
   byId('status').querySelector('span').textContent = status;
 }
 
+function lastPage() {
+  return selected.country ? selected.pages.length : selected.pages.length - 1;
+}
+
 function renderPage() {
   const end = page === selected.pages.length;
   const [file, title, note, alt] = selected.pages[end ? 0 : page];
   byId('photo').src = 'photos/' + file + '.jpg';
   byId('photo').alt = alt;
-  byId('page-label').textContent = end ? 'POUR TES 30 ANS' : 'PHOTOGRAPHIE ' + (page + 1) + ' / ' + selected.pages.length;
+  byId('page-label').textContent = end ? 'POUR TES 30 JAHRE' : 'PHOTOGRAPHIE ' + (page + 1) + ' / ' + selected.pages.length;
   byId('caption').textContent = end ? 'Un voyage en ' + selected.country + ' !' : title;
   byId('note').textContent = end ? 'Joyeux anniversaire, Manon ! Ces paysages, tu vas les découvrir pour de vrai.' : note;
   byId('prev').disabled = page === 0;
-  byId('next').textContent = end ? 'Retour à la roulette' : page === selected.pages.length - 1 ? 'Tourner la dernière page' : 'Suivante';
-  byId('progress').replaceChildren(...Array.from({ length: selected.pages.length + 1 }, (_, i) => {
+  let nextLabel = 'Suivante';
+  if (page === lastPage()) nextLabel = selected.country ? 'Retour à la roulette' : 'Fermer l’album';
+  else if (selected.country && page + 1 === lastPage()) nextLabel = 'Tourner la dernière page';
+  byId('next').textContent = nextLabel;
+  byId('progress').replaceChildren(...Array.from({ length: lastPage() + 1 }, (_, i) => {
     const dot = document.createElement('i');
     dot.classList.toggle('active', i === page);
     return dot;
   }));
 }
 
-function openAlbum(index, opener) {
-  selected = albums[index];
+function openAlbum(album, opener) {
+  selected = album;
   returnFocus = opener;
   page = 0;
-  byId('album-name').textContent = 'Album ' + selected.letter + ' · ' + selected.name;
+  viewer.classList.toggle('anniversary', album === anniversaryAlbum);
+  byId('album-name').textContent = album.letter ? 'Album ' + album.letter + ' · ' + album.name : album.name;
   renderPage();
   viewer.showModal();
   byId('next').focus();
@@ -89,7 +106,8 @@ function finishSpin() {
     spinButton.disabled = false;
     cards.forEach(card => { card.disabled = false; });
     spinMessage('Faire tourner la roue', 'La roue a choisi l’album ' + albums[chosenIndex].letter + '.');
-    openAlbum(chosenIndex, spinButton);
+    byId('jahre').disabled = false;
+    openAlbum(albums[chosenIndex], spinButton);
   };
 }
 
@@ -110,6 +128,7 @@ function pressSpin() {
   }
   chosenIndex = Math.random() < 0.9 ? 0 : 1;
   spinPhase = 'turning';
+  byId('jahre').disabled = true;
   cards.forEach(card => { card.disabled = true; });
   spinMessage('Encore un tour ?', 'La roue tourne. Laisse-la choisir…');
   const start = wheelAngle();
@@ -124,12 +143,17 @@ function pressSpin() {
 
 spinButton.addEventListener('click', pressSpin);
 
-cards.forEach(card => card.addEventListener('click', () => openAlbum(Number(card.dataset.album), card)));
+byId('jahre').addEventListener('click', event => openAlbum(anniversaryAlbum, event.currentTarget));
+cards.forEach(card => card.addEventListener('click', () => openAlbum(albums[Number(card.dataset.album)], card)));
 byId('prev').addEventListener('click', () => {
   if (page > 0) { page--; renderPage(); }
 });
 byId('next').addEventListener('click', () => {
-  if (page === selected.pages.length) { returnFocus = spinButton; viewer.close(); spinButton.focus(); return; }
+  if (page === lastPage()) {
+    if (selected.country) returnFocus = spinButton;
+    viewer.close();
+    return;
+  }
   page++;
   renderPage();
 });
@@ -138,7 +162,7 @@ viewer.addEventListener('close', () => returnFocus?.focus({ preventScroll: true 
 viewer.addEventListener('click', event => { if (event.target === viewer) viewer.close(); });
 viewer.addEventListener('keydown', event => {
   if (event.key === 'ArrowLeft') byId('prev').click();
-  if (event.key === 'ArrowRight' && page < selected.pages.length) byId('next').click();
+  if (event.key === 'ArrowRight' && page < lastPage()) byId('next').click();
 });
 
 const navLinks = document.querySelectorAll('nav a');
